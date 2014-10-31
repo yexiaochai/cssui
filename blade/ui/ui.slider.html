@@ -1,9 +1,0 @@
-﻿<ul class="ul-list horizontal <%=className %>" style="position: absolute; top: 0; left: 0;">
-  <%for(var i = 0, len = data.length; i < len; i++) { %>
-  <li data-key="<%=data[i].id %>" data-index="<%=i%>" <%if(data[i].disabled){ %> class="disabled"
-    <%} %>>
-      <%=((typeof itemFn == 'function' && itemFn(data[i], key, i)) || data[i].name) %>
-    </li>
-  <%} %>
-</ul>
-

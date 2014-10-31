@@ -35,9 +35,9 @@ define(['UIView', 'UIMask'], function (UIView, UIMask) {
       //是否为浏览器回退
       this.historyBack = false;
 
-    
       this.animateShowAction = null;
       this.animateHideAction = null;
+
     },
 
     initialize: function ($super, opts) {
@@ -46,7 +46,21 @@ define(['UIView', 'UIMask'], function (UIView, UIMask) {
       this.clearRes();
     },
 
+    resetPropery: function () {
 
+      //如果存在关闭动画接口，需要为mask加动画
+      if (this.animateHideAction) {
+        this.mask.animateHideAction = function (el) {
+          el.addClass('cm-overlay-out');
+          setTimeout(function () {
+            el.removeClass('cm-overlay-out');
+            el.hide();
+          }, 300);
+        };
+      } else {
+        this.mask.animateHideAction = null;
+      }
+    },
 
     //资源清理
     clearRes: function () {
@@ -132,6 +146,10 @@ define(['UIView', 'UIMask'], function (UIView, UIMask) {
         this._removeTouchEvent();
         this._removePushStateEvent();
 
+      });
+
+      this.on('onDestroy', function () {
+        this.mask.destroy();
       });
 
     },

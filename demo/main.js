@@ -3,7 +3,7 @@
   var project = 'demo/';
 
   window.getViewTemplatePath = function (path) {
-    return 'text!' + project + 'templates/' + path + '.html';
+    return 'text!' + project + 'views/' + path + '.html';
   }
 
   require.config({

@@ -1,8 +1,1 @@
-body, button, input, select, textarea { font: 400 14px/1.5 Arial, "Lucida Grande" ,Verdana, "Microsoft YaHei" ,hei; }
-body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { margin: 0; padding: 0; }
-body { background: #f5f5f5; }
-ul, ol { list-style: none; }
-    
-.cui-bubble-layer { background: #f2f2f2; border: #bcbcbc 1px solid; border-radius: 3px; }
-.cui-bubble-layer > li { padding: 5px 10px; }
-.cui-bubble-layer:before { position: absolute; content: ""; width: 10px; height: 10px; -webkit-transform: rotate(45deg); background: #f2f2f2; border-top: #bcbcbc 1px solid; border-left: #bcbcbc 1px solid; top: -6px; left: 50%; margin-left: -5px; z-index: 1; }
+

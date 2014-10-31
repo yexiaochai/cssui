@@ -1,4 +1,4 @@
-﻿﻿define(['View', getViewTemplatePath('index'), 'UIGroupList'], function (View, viewhtml, UIGroupList) {
+﻿define(['View', getViewTemplatePath('index'), 'UIGroupList'], function (View, viewhtml, UIGroupList) {
 
   return _.inherit(View, {
     onCreate: function () {

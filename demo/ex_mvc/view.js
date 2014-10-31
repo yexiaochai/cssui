@@ -1,4 +1,4 @@
-﻿﻿define(['AbstractView'], function (AbstractView) {
+﻿define(['AbstractView'], function (AbstractView) {
 
   return _.inherit(AbstractView, {
 
@@ -35,7 +35,6 @@
     show: function ($super) {
       $super();
       window.sss = this;
-
     }
 
 

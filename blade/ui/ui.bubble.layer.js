@@ -10,18 +10,20 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
 
       this.datamodel = {
         data: [],
-        upClass: 'f-layer-before',
-        downClass: 'f-layer-after',
-        curClass: 'cui-fl-current',
-        index: 2,
+        upClass: 'cm-pop--triangle-up',
+        downClass: 'cm-pop--triangle-down',
+        curClass: 'active',
+        itemStyleClass: '',
+        needBorder: true,
+        index: -1,
         dir: 'up'  //箭头方向默认值
       };
 
       this.events = {
-        'click .cui-f-layer>li': 'clickAction'
+        'click .cm-pop-list>li': 'clickAction'
       };
 
-      this.onClick = function (e, data, index, el) {
+      this.onClick = function (data, index, el, e) {
         console.log(arguments);
         this.setIndex(index);
         var e = '';
@@ -29,7 +31,66 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
 
       this.width = null;
 
+      //三角图标偏移量
+      this.triangleLeft = null;
+      this.triangleRight = null;
+
       this.triggerEl = null;
+
+      //      this.animateShowAction = function (el) {
+      //        el.css({
+      //          opacity: 0,
+      //          '-webkit-transform': 'translate(0, -100%)',
+      //          transform: 'translate(0,  -100%)'
+      //        });
+      //        el.show().animate({
+      //          opacity: 1,
+      //          '-webkit-transform': 'translate(0, 0)',
+      //          transform: 'translate(0, 0)'
+      //        }, 300, 'ease-in-out', $.proxy(function () {
+      //          this.$el.css({
+      //            opacity: '',
+      //            '-webkit-transform': '',
+      //            transform: ''
+      //          });
+      //        }, this));
+      //      };
+
+      //      this.animateHideAction = function (el) {
+      //        el.animate({
+      //          opacity: 0,
+      //          '-webkit-transform': 'translate(0, -100%)',
+      //          transform: 'translate(0,  -100%)'
+      //        }, 300, 'ease-in-out', $.proxy(function () {
+      //          this.$el.css({
+      //            opacity: '',
+      //            '-webkit-transform': '',
+      //            transform: ''
+      //          });
+      //          el.hide();
+      //        }, this));
+      //      };
+
+      this.animateShowAction = function (el) {
+        el.show();
+        el.addClass('cm-up-in');
+
+        setTimeout(function () {
+          el.removeClass('cm-up-in');
+        }, 300)
+
+      };
+
+      this.animateHideAction = function (el) {
+        //        el.show();
+        el.addClass('cm-up-out');
+
+        setTimeout(function () {
+          el.removeClass('cm-up-out');
+          el.hide();
+        }, 300)
+
+      };
 
     },
 
@@ -45,11 +106,13 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
       var el = $(e.currentTarget);
       var i = el.attr('data-index');
       var data = this.datamodel.data[i];
-      this.onClick.call(this, e, data, i, el);
+      this.onClick.call(this, data, i, el, e);
     },
 
     initElement: function () {
       this.el = this.$el;
+      this.triangleEl = this.$('.icond-pop-triangle');
+      this.windowWidth = $(window).width();
     },
 
     setIndex: function (i) {
@@ -59,7 +122,7 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
       this.datamodel.index = i;
 
       //这里不以datamodel改变引起整个dom变化了，不划算
-      this.$('.cui-f-layer li').removeClass(curClass);
+      this.$('.cm-pop-list li').removeClass(curClass);
       this.$('li[data-index="' + i + '"]').addClass(curClass);
     },
 
@@ -68,19 +131,36 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
       if (!this.triggerEl) return;
       var offset = this.triggerEl.offset();
       var step = 6, w = offset.width - step;
-      var top = 0, left = 0;
+      var top = 0, left = 0, right;
       if (this.datamodel.dir == 'up') {
         top = (offset.top + offset.height + 8) + 'px';
-        left = (offset.left + 2) + 'px';
       } else {
         top = (offset.top - this.el.offset().height - 8) + 'px';
-        left = (offset.left + 2) + 'px';
       }
-      this.el.css({
-        width: this.width || w,
-        top: top,
-        left: left
-      });
+
+      left = (offset.left + 2) + 'px';
+
+      if (offset.left + (this.width || w) > this.windowWidth) {
+        this.el.css({
+          width: this.width || w,
+          top: top,
+          right: '2px'
+        });
+      } else {
+        this.el.css({
+          width: this.width || w,
+          top: top,
+          left: left
+        });
+      }
+
+      if (this.triangleLeft) {
+        this.triangleEl.css({ 'left': this.triangleLeft, 'right': 'auto' });
+      }
+      if (this.triangleRight) {
+        this.triangleEl.css({ 'right': this.triangleRight, 'left': 'auto' });
+      }
+
     },
 
     addEvent: function ($super) {
