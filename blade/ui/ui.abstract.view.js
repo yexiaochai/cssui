@@ -1,4 +1,4 @@
-﻿define([], function () {
+﻿﻿define([], function () {
 
   //闭包保存所有UI共用的信息，比如z-index
   var getBiggerzIndex = (function () {
@@ -191,7 +191,6 @@
     //刷新根据传入参数判断是否走onCreate事件
     //这里原来的dom会被移除，事件会全部丢失 需要修复*****************************
     refresh: function (needEvent) {
-      this.trigger('onRefresh');
       this.resetPropery();
       if (needEvent) {
         this.create();
@@ -200,6 +199,7 @@
       }
       this.initElement();
       if (this.status == 'show') this.show();
+      this.trigger('onRefresh');
     },
 
     show: function () {

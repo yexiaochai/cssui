@@ -1,4 +1,4 @@
-﻿define(['View', getViewTemplatePath('index'), 'UIGroupList'], function (View, viewhtml, UIGroupList) {
+﻿﻿define(['View', getViewTemplatePath('index'), 'UIGroupList'], function (View, viewhtml, UIGroupList) {
 
   return _.inherit(View, {
     onCreate: function () {
@@ -94,15 +94,17 @@
 
       //提示类
       var groupList1 = [
-        { 'uiname': 'pageview', 'name': '全局遮盖工具组件pageview' },
-        { 'uiname': 'alert', 'name': '警告框' },
-        { 'uiname': 'toast', 'name': 'toast框' },
-        { 'uiname': 'reloading', 'name': 'loading框' },
+//        { 'uiname': 'alert', 'name': '警告框' },
+//        { 'uiname': 'toast', 'name': 'toast框' },
+//        { 'uiname': 'reloading', 'name': 'loading框' },
         { 'uiname': 'bubble.layer', 'name': '气泡框提示' },
-        { 'uiname': 'warning404', 'name': '404提醒' }
+//        { 'uiname': 'warning404', 'name': '404提醒' },
+//        { 'uiname': 'layerlist', 'name': '弹出层list' }
       ];
 
       var groupList2 = [
+
+        { 'uiname': 'identity', 'name': '身份证键盘' },
         { 'uiname': 'imageslider', 'name': '图片轮播' },
         { 'uiname': 'num', 'name': '数字组件' },
         { 'uiname': 'select', 'name': 'select组件' },
@@ -129,10 +131,10 @@
       ];
 
       var uidata = [
-        { name: '提示类组件', data: groupList1 },
-        { name: '常用组件', data: groupList2 },
-        { name: '滚动类组件', data: groupList3 },
-        { name: '全局类', data: groupList4 }
+        { name: '弹出层类组件', data: groupList1 },
+//        { name: '常用组件', data: groupList2 },
+//        { name: '滚动类组件', data: groupList3 }
+//        { name: '全局类', data: groupList4 }
       ];
 
       this.uidata = uidata;

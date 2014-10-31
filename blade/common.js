@@ -1,4 +1,4 @@
-﻿(function () {
+﻿﻿(function () {
 
   var app = './blade/';
 
@@ -40,8 +40,6 @@
 //      'T_UIToast': 'http://localhost:5389/blade/demo/templates/toast.html',
 
 
-      'UIPageview': app + 'ui/ui.pageview',
-
       'UIInlineView': app + 'ui/ui.inline.view',
       'UINum': app + 'ui/ui.num',
       'UISwitch': app + 'ui/ui.switch',
@@ -56,6 +54,12 @@
       'UICalendar': app + 'ui/ui.calendar',
       'UISlider': app + 'ui/ui.slider',
       'UIImageSlider': app + 'ui/ui.image.slider',
+
+
+      'UIIdentitycard': app + 'ui/ui.identitycard',
+      'UILayerList': app + 'ui/ui.layer.list',
+
+
 
       'UIInputClear': app + 'ui/ui.inputclear',
       'UIWarning404': app + 'ui/ui.warning404'
