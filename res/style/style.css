@@ -1,1 +1,27 @@
+/*全局重置 begin*/
+body, button, input, select, textarea { font: 400 14px/1.5 Arial, "Lucida Grande" ,Verdana, "Microsoft YaHei" ,hei; }
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { margin: 0; padding: 0; }
+body { background: #f5f5f5; }
+ul, ol { list-style: none; }
+h1, h2, h3, h4, h5, h6 { font-size: 100%; font-weight: 500; }
+h1 { font: 600 1.286em/2 Tahoma; }
+h2 { font: 600 1.143em/2 Tahoma; }
+h3 { font: 600 1em/1.5 Tahoma; }
+address,cite,dfn,em,var,i {
+  font-style: normal;
+  font-weight: 400;
+}
+/*全局重置 end*/
+    
 
+    
+    
+/*气泡组件 begin*/
+.cui-bubble-layer { background: #f2f2f2; border: #bcbcbc 1px solid; border-radius: 3px; }
+.cui-bubble-layer > li { padding: 5px 10px; }
+.cui-bubble-layer .cui-pop-triangle { position: absolute; content: ""; width: 10px; height: 10px;  background: #f2f2f2;  left: 50%; margin-left: -5px; z-index: 1; }
+.cui-pop-triangle-down .cui-pop-triangle {  -webkit-transform: rotate(-135deg); bottom: -6px; border-top: #bcbcbc 1px solid; border-left: #bcbcbc 1px solid; }
+.cui-pop-triangle-up .cui-pop-triangle { -webkit-transform: rotate(45deg); top: -6px;  border-top: #bcbcbc 1px solid; border-left: #bcbcbc 1px solid; }
+
+
+/*气泡组件 end*/

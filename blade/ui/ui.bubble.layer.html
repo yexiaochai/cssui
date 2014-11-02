@@ -1,12 +1,12 @@
-﻿<section class="cm-pop cm-pop--radius <%if(needBorder){ %> cm-pop--border <%} %> <%if(dir == 'up'){ %> <%=upClass %> <% } else { %> <%=downClass %> <% } %>">
-<i class="icond-pop-triangle"></i>
-<div class="cm-pop-bd">
-  <ul class="cm-pop-list <%=itemStyleClass %>">
+﻿<section class="cui-pop <%=wrapperClass %> <%if(dir == 'up'){ %> <%=upClass %> <% } else { %> <%=downClass %> <% } %>">
+  <i class="cui-pop-triangle"></i>
+  <div class="cui-pop-body">
+    <ul class="cui-pop-list <%=itemStyleClass %>">
     <% for(var i = 0, len = data.length; i < len; i++) { %>
-    <% var itemData = data[i]; %>
-    <li data-index="<%=i%>" data-flag="c" class="<% if(index == i){ %><%=curClass %><%} %>"  ><%=itemData.name %></li>
+      <% var itemData = data[i]; %>
+      <li data-index="<%=i%>" data-flag="c" class="<% if(index == i){ %><%=curClass %><%} %>" >
+        <%if(typeof itemFn == 'function') { %><%=itemFn.call(itemData) %> <% } else { %><%=itemData.name%><%} %>
     <% } %>
-  </ul>
-</div>
+    </ul>
+  </div>
 </section>
-

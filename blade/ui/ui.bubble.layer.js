@@ -1,17 +1,17 @@
 ﻿
-define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, template) {
+define(['UILayer', getAppUITemplatePath('ui.bubble.layer'), 'UIScroll'], function (UILayer, template, UIScroll) {
   return _.inherit(UILayer, {
     propertys: function ($super) {
       $super();
       //html模板
       this.template = template;
       this.needMask = false;
-      //      this.needReposition = false;
 
       this.datamodel = {
         data: [],
-        upClass: 'cm-pop--triangle-up',
-        downClass: 'cm-pop--triangle-down',
+        wrapperClass: 'cui-bubble-layer',
+        upClass: 'cui-pop-triangle-up',
+        downClass: 'cui-pop-triangle-down',
         curClass: 'active',
         itemStyleClass: '',
         needBorder: true,
@@ -20,13 +20,13 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
       };
 
       this.events = {
-        'click .cm-pop-list>li': 'clickAction'
+        'click .cui-pop-list>li': 'clickAction'
       };
 
       this.onClick = function (data, index, el, e) {
         console.log(arguments);
-        this.setIndex(index);
-        var e = '';
+        this.hide();
+        //        this.setIndex(index);
       };
 
       this.width = null;
@@ -36,61 +36,6 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
       this.triangleRight = null;
 
       this.triggerEl = null;
-
-      //      this.animateShowAction = function (el) {
-      //        el.css({
-      //          opacity: 0,
-      //          '-webkit-transform': 'translate(0, -100%)',
-      //          transform: 'translate(0,  -100%)'
-      //        });
-      //        el.show().animate({
-      //          opacity: 1,
-      //          '-webkit-transform': 'translate(0, 0)',
-      //          transform: 'translate(0, 0)'
-      //        }, 300, 'ease-in-out', $.proxy(function () {
-      //          this.$el.css({
-      //            opacity: '',
-      //            '-webkit-transform': '',
-      //            transform: ''
-      //          });
-      //        }, this));
-      //      };
-
-      //      this.animateHideAction = function (el) {
-      //        el.animate({
-      //          opacity: 0,
-      //          '-webkit-transform': 'translate(0, -100%)',
-      //          transform: 'translate(0,  -100%)'
-      //        }, 300, 'ease-in-out', $.proxy(function () {
-      //          this.$el.css({
-      //            opacity: '',
-      //            '-webkit-transform': '',
-      //            transform: ''
-      //          });
-      //          el.hide();
-      //        }, this));
-      //      };
-
-      this.animateShowAction = function (el) {
-        el.show();
-        el.addClass('cm-up-in');
-
-        setTimeout(function () {
-          el.removeClass('cm-up-in');
-        }, 300)
-
-      };
-
-      this.animateHideAction = function (el) {
-        //        el.show();
-        el.addClass('cm-up-out');
-
-        setTimeout(function () {
-          el.removeClass('cm-up-out');
-          el.hide();
-        }, 300)
-
-      };
 
     },
 
@@ -111,8 +56,11 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
 
     initElement: function () {
       this.el = this.$el;
-      this.triangleEl = this.$('.icond-pop-triangle');
+      this.triangleEl = this.$('.cui-pop-triangle');
       this.windowWidth = $(window).width();
+      this.windowHeight = $(window).height();
+      this.listWrapper = this.$('.cui-pop-body');
+      this.listEl = this.$('.cui-pop-list');
     },
 
     setIndex: function (i) {
@@ -122,7 +70,7 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
       this.datamodel.index = i;
 
       //这里不以datamodel改变引起整个dom变化了，不划算
-      this.$('.cm-pop-list li').removeClass(curClass);
+      this.$('.cui-pop-list li').removeClass(curClass);
       this.$('li[data-index="' + i + '"]').addClass(curClass);
     },
 
@@ -140,7 +88,7 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
 
       left = (offset.left + 2) + 'px';
 
-      if (offset.left + (this.width || w) > this.windowWidth) {
+      if (offset.left + (parseInt(this.width) || w) > this.windowWidth) {
         this.el.css({
           width: this.width || w,
           top: top,
@@ -160,7 +108,36 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
       if (this.triangleRight) {
         this.triangleEl.css({ 'right': this.triangleRight, 'left': 'auto' });
       }
+    },
 
+    isSizeOverflow: function () {
+      if (!this.el) return false;
+      if (this.el.height() > this.windowHeight * 0.8) return true;
+      return false;
+    },
+
+    handleSizeOverflow: function () {
+      if (!this.isSizeOverflow()) return;
+
+      this.listWrapper.css({
+        height: (parseInt(this.windowHeight * 0.8) + 'px'),
+        overflow: 'hidden',
+        position: 'relative'
+      });
+
+      this.listEl.css({ position: 'absolute', width: '100%' });
+
+      //调用前需要重置位置
+      this.reposition();
+
+      this.scroll = new UIScroll({
+        wrapper: this.listWrapper,
+        scroller: this.listEl
+      });
+    },
+
+    checkSizeOverflow: function () {
+      this.handleSizeOverflow();
     },
 
     addEvent: function ($super) {
@@ -170,8 +147,13 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, 
         this.$el.css({ position: 'absolute' });
       });
       this.on('onShow', function () {
-        this.setzIndexTop(this.el);
 
+        //检查可视区域是否超出;
+        this.checkSizeOverflow();
+        this.setzIndexTop(this.el);
+      });
+      this.on('onHide', function () {
+        if (this.scroll) this.scroll.destroy();
       });
     }
 

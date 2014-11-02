@@ -1,6 +1,51 @@
-﻿
+﻿<style>
+  /* 临时css 后面干掉*/
+  
+  header .icond-list { display: inline-block; position: absolute; z-index: 3000; color: White; width: 68px; height: 48px; line-height: 48px; vertical-align: middle; text-align: center; right: 0; bottom: 0; font-size: xx-large; font-weight: bolder; left: auto; }
+  
+  /*header begin*/
+  #headerview header, .sub-viewport header { z-index: 2000; }
+  
+  #headerview header { position: fixed; top: 0; left: 0; z-index: 9999; width: 100%; height: 48px; background-color: #1491c5; }
+  
+  #headerview header h1 { position: absolute; width: 100%; line-height: 48px; text-align: center; letter-spacing: 2px; color: #fff; }
+  
+  #headerview header h1 a { color: #fff; }
+  
+  #headerview header h2 { position: absolute; width: 100%; line-height: 48px; text-align: center; letter-spacing: 1px; color: #fff; }
+  
+  #headerview header h2 a { color: #fff; }
+  /*header end*/
+  
+  
+  button { padding: 5px; position: absolute; }
+  .cui-pop-list .center { padding: 5px 10px; }
+  
+  .cui-mask { background: rgba(0,0,0,.5); z-index: 2000; }
+  
+  .needBorder > li { border-bottom: 1px solid #dbdbdb; padding: 5px 0; }
+  
+  
+  
+  
+  .cm-pop--user-nav { top: 44px; right: 0; color: #fff; width: 128px; }
+  .cm-pop--user-nav .cm-pop-list li { background-color: #283847; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+  .cm-pop--user-nav .cm-pop-list li i[class^="icon-"] { margin-right: 10px; }
+  .cm-pop--user-nav .cm-pop-list li:active, .cm-pop--user-nav .cm-pop-list li:hover { background-color: #161e26; }
+  
+  .cm-pop--user-nav .cui-pop-triangle {  background-color: #283847;  border-color: #283847;   width: 10px; height: 10px; position: absolute; bottom: -5px; left: 50%; margin-left: -5px; -webkit-transform: rotate(45deg); transform: rotate(45deg); z-index: -1; }
+  .cm-pop--user-nav li { padding: 5px 10px;}
+  
+</style>
 <div id="headerview" style="height: 48px;">
   <header>
-    <h1>冒泡组件</h1>
+    <h1>
+      冒泡组件</h1>
   </header>
 </div>
+<button class="demo1" style="left: 0; top: 100px;">
+  demo：向下菜单</button>
+<button class="demo2" style="right: 0; top: 250px;">
+  demo：向上菜单</button>
+<button class="demo3" style="position: fixed; bottom: 0; width: 100%;">
+  demo：项目过多时</button>
