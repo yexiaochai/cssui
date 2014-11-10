@@ -1,0 +1,53 @@
+﻿
+<header class="cm-header">
+<%
+var i = 0, len = 0;
+var left = model.left;
+var center = model.center;
+var right = model.right;
+var item = null;
+var itemCfg = null;
+
+%>
+
+<% for(i = 0, len = left.length; i < len; i++) { %>
+  <% item = left[i]; 
+     itemCfg = cfg[item.type];
+  %>
+  <%if(item.type=='icon') { %>
+    <<%=itemCfg.tag %> class="<%=itemCfg.classname %> fl" >
+      <<%=itemCfg.childTag %> class="<%=itemCfg.preFlag %>-<%=item.tagname %>"></<%=itemCfg.childTag %>>
+    </<%=itemCfg.tag %>>
+  <%} else { %>
+    <<%=itemCfg.tag %> class="<%=itemCfg.classname %> fl" ><%=item.title %></<%=itemCfg.tag %>>
+  <%} %>
+<%} %>
+
+<% for(i = right.length - 1; i > -1; i--) { %>
+  <% item = right[i]; 
+    itemCfg = cfg[item.type];
+  %>
+  <%if(item.type=='icon') { %>
+    <<%=itemCfg.tag %> class="<%=itemCfg.classname %> fr" >
+      <<%=itemCfg.childTag %> class="<%=itemCfg.preFlag %>-<%=item.tagname %>"></<%=itemCfg.childTag %>>
+    </<%=itemCfg.tag %>>
+  <%} else { %>
+    <<%=itemCfg.tag %> class="<%=itemCfg.classname %> fr" ><%=item.title %></<%=itemCfg.tag %>>
+  <%} %>
+<%} %>
+
+<% for(i = 0, len = center.length; i < len; i++) { %>
+<% item = center[i]; 
+    itemCfg = cfg[item.type];
+%>
+  <%if(item.type=='title') { %>
+    <<%=itemCfg.tag %> class="<%=itemCfg.classname %>" >
+      <%=item.title %>
+    </<%=itemCfg.tag %>>
+  <%} else { %>
+    
+  <%} %>
+<%} %>
+
+</header>
+

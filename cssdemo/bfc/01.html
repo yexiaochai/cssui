@@ -1,0 +1,64 @@
+﻿<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Blade Demo</title>
+  <style type="text/css">
+    .fl { float: left; }
+    .fr { float: right; }
+    .tc { text-align: center; }
+    span { display: inline-block; color: #099fde; }
+    
+    
+    .flex { display: flex; } 
+    
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="fl">后退</span> <span class="fr">更多</span> <span class="fr">首页</span>
+    <div class="tc">
+      我是标题</div>
+  </div>
+
+  <br />
+  <br />
+  <br />
+
+<div class="flex">
+  <div>项目一</div>
+  <div>项目二</div>
+  <div>项目三</div>
+  <div>项目四</div>
+</div>
+
+  <script type="text/javascript">
+/*
+容器与项目
+
+现在display由多出了一个常用属性：flex | inline-flex ；如前面所言，设置后会为容器创建独立的格式化上下文，内中的布局便特殊化了
+
+容器的属性包括：
+① 伸缩流方向flex-direction，默认值为row
+② 伸缩行换行flex-wrap，伸缩项目有时也会溢出容器，该属性可设置项目是单行还是多行，默认不换
+PS：容器还有一个flex-flow可同时设置上述属性
+③ ......
+容器项目可设置属性包括：
+① 显示顺序
+② 侧轴对齐，一种是align-items，可以设置匿名项目与所有项目对齐保持一致，另一种是align-self用以为单独项目上复写默认对齐，对于匿名项目align-self值与关联的伸缩容器的align-items相同
+③ 伸缩性，用以改变项目改变其高度或宽度添补可用的空间....
+④ 伸缩行.....
+PS：上面的介绍，我在用该知识点时候木有碰到，我也压根就没懂......
+我这里作为小白在实际使用中，用到比较关键的属性是用于item项目的flex属性，他决定项目的宽度，扩展比率，收缩比率
+
+flex; none | [ flex-grow flex-shrink flex-basis ]
+
+这里以一个例子做说明：
+
+
+
+
+*/
+  
+  </script>
+</body>
+</html>

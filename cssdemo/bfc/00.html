@@ -3,17 +3,21 @@
   <meta charset="utf-8" />
   <title>Blade Demo</title>
   <style type="text/css">
-    .fl { float: left; }
-    .fr { float: right; }
-    .tc { text-align: center; }
-    span { display: inline-block; color: #099fde; }
+    * { box-sizing: border-box; font-size: 12px; }
+    .flex { display: flex; }
+    .flex > div { width: 50px; height: 40px; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <span class="fl">后退</span> <span class="fr">更多</span> <span class="fr">首页</span>
-    <div class="tc">
-      我是标题</div>
+  <div class="flex">
+    <div>
+      项目一</div>
+    <div >
+      项目二</div>
+    <div style="width: 100%;">
+      项目三</div>
+    <div>
+      项目四</div>
   </div>
 </body>
 </html>

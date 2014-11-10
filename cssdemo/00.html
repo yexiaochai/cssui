@@ -1,0 +1,74 @@
+﻿<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Blade Demo</title>
+  <style type="text/css">
+  </style>
+</head>
+<body>
+  <ul class="keyAll" data-flag="keyAll">
+    <li class="key1" data-flag="key1"></li>
+    <li class="key2" data-flag="key2"></li>
+  </ul>
+  <script src="../../blade/libs/zepto.js" type="text/javascript"></script>
+  <script type="text/javascript">
+
+    var mappingCfg = {
+      'icon': {
+        tag: 'span',
+        classname: 'cm-header-icon',
+        childTagname: 'i',
+        preFlag: 'icond'
+      },
+      'btn': {
+        tag: 'span',
+        classname: 'cm-header-btn'
+      }
+    };
+
+    var model = {
+      left: [
+        {
+          tagname: 'back',
+          //icon或者btn
+          type: 'icon',
+          //不设置默认为mappingCfg.icon.preFlag + tagname 这里是：icond-back
+          iconClass: ''
+        }
+      ],
+      center: [
+        {
+
+        }
+      ],
+      right: [
+        {
+          tagname: 'list',
+          type: 'icon'
+        },
+        {
+          tagname: 'phone',
+          type: 'icon'
+        },
+        {
+          tagname: 'confirm',
+          type: 'btn',
+          title: '确认'
+        }
+      ],
+      events: {
+        //与tagname一一对应，这是个映射规则，只要有tagname便可为其设置回调
+        //el为对应根元素
+        backHandler: function (el) { },
+        confirmHandler: function (el) { },
+        listHandler: function (el) { },
+        phoneHandler: function (el) { }
+      }
+
+    };
+
+
+  </script>
+</body>
+</html> 

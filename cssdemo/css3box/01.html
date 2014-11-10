@@ -7,20 +7,36 @@
   <style type="text/css">
     body { padding: 10px; }
     
-    #demo1{ display: flex; display: -webkit-flex; border: 1px solid black; }
-    #demo1>li{  padding: 10px; -webkit-box-flex: 1; box-flex: 1; flex: 1; -webkit-flex: 1;  }
+     .fl { float: left; }
+    .fr { float: right; }
+    .tc { text-align: center; }
+    
+    .cui-header { height: 44px; line-height: 44px; background-color: #099fde; color: #fff; }
+    
     
   </style>
 </head>
 <body>
-  <ul id="demo1">
-  </ul>
+
+<header class="cui-header">
+<span class="cui-back fl"></span>
+
+
+</header>
+
+
   <script src="../../blade/libs/zepto.js" type="text/javascript"></script>
   <script type="text/javascript">
-    var demo = $('#demo1');
-    for (var i = 0; i < 3; i++) {
-      demo.append($('<li>项目_' + i + '</li>'));
-    }
+/*
+
+float实现布局
+
+Header一般是左中右布局，右边的项目不定，我这里先以float实现
+
+
+
+
+*/    
 
   </script>
 </body>
