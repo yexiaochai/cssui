@@ -219,7 +219,14 @@
                 data: [{ id: '1', name: '类别1' }, { id: '2', name: '类别2'}],
                 index: 1
               }
-            ]
+            ],
+          right: [
+            {
+              itemFn: function () {
+                return '<span class="fr cm-header-btn">文字信息</span>';
+              }
+            }
+          ]
         },
         eventHandlers: {
           //与tagname一一对应

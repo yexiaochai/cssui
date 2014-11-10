@@ -10,7 +10,9 @@ var item = null;
 
 <% for(i = 0, len = left.length; i < len; i++) { %>
   <% item = left[i]; %>
-  <%if(item.type=='btn') { %>
+  <%if(typeof item.itemFn == 'function') { %>
+    <%=item.itemFn() %>
+  <%} else if(item.type=='btn') { %>
     <span class="cm-header-btn fl js_<%=item.tagname %>" ><%=item.title %></span>
   <%} else { %>
     <span class="cm-header-icon fl  js_<%=item.tagname %>" >
@@ -21,7 +23,9 @@ var item = null;
 
 <% for(i = right.length - 1; i > -1; i--) { %>
   <% item = right[i]; %>
-  <%if(item.type=='btn' ) { %>
+   <%if(typeof item.itemFn == 'function') { %>
+    <%=item.itemFn() %>
+  <%} else if(item.type=='btn' ) { %>
     <span class="cm-header-btn fr js_<%=item.tagname %>" ><%=item.title %></span>
   <%} else { %>
      <span class="cm-header-icon fr js_<%=item.tagname %>" >
