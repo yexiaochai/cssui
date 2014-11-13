@@ -1,4 +1,4 @@
-﻿define(['View', getViewTemplatePath('header'), 'UIHeader'], function (View, viewhtml, UIHeader) {
+﻿define(['View', getViewTemplatePath('header'), 'UIHeader', 'UIBubbleLayer'], function (View, viewhtml, UIHeader, UIBubbleLayer) {
 
   return _.inherit(View, {
     onCreate: function () {
@@ -9,253 +9,100 @@
 
     onPreShow: function () {
       this.turning();
+      var scope = this;
 
-      this.header = new UIHeader({
-        datamodel: {
-          left: [
-              {
-                tagname: 'back',
-                //icon或者btn
-                type: 'icond'
-              }
-            ],
-          center: [
-              {
-                tagname: 'title',
-                type: 'title',
-                title: '我是标题'
-              }
-            ],
-          right: [
-              {
-                tagname: 'phone',
-                type: 'icon'
-              },
-              {
-                tagname: 'list',
-                type: 'icond'
-              }
-            ]
+      var scope = this;
+
+      this.header = new UIHeader();
+
+      this.header.set({
+        view: this,
+        left: [
+          {
+            'tagname': 'back', value: '取消', callback: function () {
+              console.log('返回');
+            }
+          }
+        ],
+        right: [
+        {
+          'tagname': 'home', callback: function () {
+            console.log('返回');
+          }
         },
-        eventHandlers: {
-          //与tagname一一对应
-          'back': function () {
-            console.log('back');
+        { 'tagname': 'search' },
+        {
+          'tagname': 'list', callback: function (e) {
+            if (!scope.list) {
+              var data = [{ name: '<span class="center">北京出发</span>' },
+                { name: '<span class="center">杭州出发</span>' },
+                { name: '<span class="center">成都出发</span>' },
+                { name: '<span class="center">广州出发</span>'}];
+              scope.list = new UIBubbleLayer({
+                datamodel: {
+                  data: data
+                },
+                triggerEl: $(e.currentTarget),
+                width: '130px',
+                triangleLeft: '25px',
+                onClick: function (data, index) {
+                  this.hide();
+                }
+              });
+            }
+            scope.list.show();
+          }
+        },
+        { 'tagname': 'tel', 'number': '56973144' },
+        {
+          'tagname': 'commit', 'value': '登录', callback: function () {
+            console.log('登录');
+          }
+        },
+        {
+          'tagname': 'custom', 'value': '定制化',
+          itemFn: function () {
+            return '<span class="cm-header-btn fr js_custom">定制化</span>';
           },
-          'phone': function () {
-            console.log('phone');
-          },
-          'list': function () {
-            console.log('list');
-          },
-          'title': function () {
-            console.log('title');
+          callback: function () {
+            console.log('定制化');
+          }
+        }
+      ],
+
+        center: {
+          'tagname': 'tabs', 'data': { items: [{ id: '1', name: '类别1' }, { id: '2', name: '类别2'}], index: 0 }, callback: function () {
+            console.log('标题点击回调');
           }
         }
 
       });
-
       this.header.show();
 
-      this.header1 = new UIHeader({
-        datamodel: {
-          left: [
-              {
-                tagname: 'back',
-                //icon或者btn
-                type: 'btn',
-                title: '取消'
-              }
-            ],
-          center: [
-              {
-                tagname: 'title',
-                type: 'title',
-                title: '我是标题2'
-              }
-            ],
-          right: [
 
-              {
-                tagname: 'confirm',
-                type: 'btn',
-                title: '确认'
-              }
-            ]
-        },
-        eventHandlers: {
-          //与tagname一一对应
-          'back': function () {
+      this.header1 = new UIHeader();
+      this.header1.set({
+        title: '基本Header使用',
+        subtitle: '中间副标题',
+        back: true,
+        backtext: '取消',
+        tel: { number: 1111 },
+        home: true,
+        search: true,
+        btn: { title: "登录", id: 'confirmBtn', classname: 'header_r' },
+        events: {
+          returnHandler: function () {
             console.log('back');
           },
-          'home': function () {
-            console.log('home');
-          },
-          'confirm': function () {
-            console.log('confirm');
-          },
-          'title': function () {
-            console.log('title');
+          homeHandler: function (e) {
+            console.log('home')
+
           }
         }
       });
 
       this.header1.show();
-      this.header1.$el.css('top', '50px');
-
-
-      this.header2 = new UIHeader({
-        datamodel: {
-          left: [
-              {
-                tagname: 'back',
-                type: 'icond'
-              }
-            ],
-          center: [
-              {
-                tagname: 'title',
-                type: 'select',
-                title: '下拉菜单'
-              }
-            ],
-          right: [
-              {
-                tagname: 'home',
-                type: 'icon'
-              },
-              {
-                tagname: 'phone',
-                type: 'icon'
-              }
-            ]
-        },
-        eventHandlers: {
-          //与tagname一一对应
-          'back': function () {
-            console.log('back');
-          },
-          'home': function () {
-            console.log('home');
-          },
-          'phone': function () {
-            console.log('phone');
-          },
-          'title': function (e) {
-            var el = $(e.currentTarget);
-            if (el.hasClass('expanded')) {
-              el.removeClass('expanded');
-              console.log('关闭');
-            } else {
-              el.addClass('expanded');
-              console.log('打开');
-            }
-
-          }
-        }
-      });
-
-      this.header2.show();
-      this.header2.$el.css('top', '100px');
-
-
-      this.header3 = new UIHeader({
-        datamodel: {
-          left: [
-              {
-                tagname: 'back',
-                type: 'icond'
-              }
-            ],
-          center: [
-              {
-                tagname: 'title',
-                type: 'title',
-                title: ['大号标题', '小号标题']
-              }
-            ],
-          right: [
-              {
-                tagname: 'home',
-                type: 'icon'
-              },
-              {
-                tagname: 'phone',
-                type: 'icon'
-              }
-            ]
-        },
-        eventHandlers: {
-          //与tagname一一对应
-          'back': function () {
-            console.log('back');
-          },
-          'home': function () {
-            console.log('home');
-          },
-          'phone': function () {
-            console.log('phone');
-          }
-        }
-      });
-
-      this.header3.show();
-      this.header3.$el.css('top', '150px');
-
-
-
-      this.header4 = new UIHeader({
-        datamodel: {
-          left: [
-              {
-                tagname: 'back',
-                type: 'icond'
-              }
-            ],
-          center: [
-              {
-                tagname: 'title',
-                type: 'tabs',
-                data: [{ id: '1', name: '类别1' }, { id: '2', name: '类别2'}],
-                index: 1
-              }
-            ],
-          right: [
-            {
-              itemFn: function () {
-                return '<span class="fr cm-header-btn">文字信息</span>';
-              }
-            }
-          ]
-        },
-        eventHandlers: {
-          //与tagname一一对应
-          'back': function () {
-            console.log('back');
-          },
-          'home': function () {
-            console.log('home');
-          },
-          'phone': function () {
-            console.log('phone');
-          },
-          'title': function (e) {
-            var el = $(e.target);
-            var wrapper = $(e.currentTarget);
-
-            wrapper.find('span').removeClass('active');
-            el.addClass('active');
-
-            console.log(el.attr('data-key'));
-
-
-          }
-        }
-      });
-
-      this.header4.show();
-      this.header4.$el.css('top', '200px');
-
+      this.header1.$el.css('top', '100px');
     },
 
     onShow: function () {

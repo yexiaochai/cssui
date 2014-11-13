@@ -1246,6 +1246,7 @@ textarea::-webkit-input-placeholder {
   line-height: 34px;
   margin-top: 5px;
   margin-right: 44px;
+  overflow: hidden;
 }
 .cm-header .cm-page-select-title::after {
   content: "";

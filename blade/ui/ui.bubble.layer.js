@@ -1,17 +1,19 @@
 ﻿
-define(['UILayer', getAppUITemplatePath('ui.bubble.layer'), 'UIScroll'], function (UILayer, template, UIScroll) {
+define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], function (UILayer, template) {
   return _.inherit(UILayer, {
     propertys: function ($super) {
       $super();
       //html模板
       this.template = template;
       this.needMask = false;
+      //      this.needReposition = false;
 
       this.datamodel = {
+        scope: this,
         data: [],
-        wrapperClass: 'cui-bubble-layer',
-        upClass: 'cui-pop-triangle-up',
-        downClass: 'cui-pop-triangle-down',
+        upClass: 'cm-pop--triangle-up',
+        downClass: 'cm-pop--triangle-down',
+        wrapperClass: 'cm-pop--border', 
         curClass: 'active',
         itemStyleClass: '',
         needBorder: true,
@@ -20,13 +22,13 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer'), 'UIScroll'], functio
       };
 
       this.events = {
-        'click .cui-pop-list>li': 'clickAction'
+        'click .cm-pop-list>li': 'clickAction'
       };
 
       this.onClick = function (data, index, el, e) {
         console.log(arguments);
-        this.hide();
-        //        this.setIndex(index);
+        this.setIndex(index);
+        var e = '';
       };
 
       this.width = null;
@@ -36,6 +38,7 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer'), 'UIScroll'], functio
       this.triangleRight = null;
 
       this.triggerEl = null;
+      this.needAnimat = true;
 
     },
 
@@ -56,11 +59,8 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer'), 'UIScroll'], functio
 
     initElement: function () {
       this.el = this.$el;
-      this.triangleEl = this.$('.cui-pop-triangle');
+      this.triangleEl = this.$('.icon-pop-triangle');
       this.windowWidth = $(window).width();
-      this.windowHeight = $(window).height();
-      this.listWrapper = this.$('.cui-pop-body');
-      this.listEl = this.$('.cui-pop-list');
     },
 
     setIndex: function (i) {
@@ -70,7 +70,7 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer'), 'UIScroll'], functio
       this.datamodel.index = i;
 
       //这里不以datamodel改变引起整个dom变化了，不划算
-      this.$('.cui-pop-list li').removeClass(curClass);
+      this.$('.cm-pop-list li').removeClass(curClass);
       this.$('li[data-index="' + i + '"]').addClass(curClass);
     },
 
@@ -108,36 +108,7 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer'), 'UIScroll'], functio
       if (this.triangleRight) {
         this.triangleEl.css({ 'right': this.triangleRight, 'left': 'auto' });
       }
-    },
 
-    isSizeOverflow: function () {
-      if (!this.el) return false;
-      if (this.el.height() > this.windowHeight * 0.8) return true;
-      return false;
-    },
-
-    handleSizeOverflow: function () {
-      if (!this.isSizeOverflow()) return;
-
-      this.listWrapper.css({
-        height: (parseInt(this.windowHeight * 0.8) + 'px'),
-        overflow: 'hidden',
-        position: 'relative'
-      });
-
-      this.listEl.css({ position: 'absolute', width: '100%' });
-
-      //调用前需要重置位置
-      this.reposition();
-
-      this.scroll = new UIScroll({
-        wrapper: this.listWrapper,
-        scroller: this.listEl
-      });
-    },
-
-    checkSizeOverflow: function () {
-      this.handleSizeOverflow();
     },
 
     addEvent: function ($super) {
@@ -147,13 +118,8 @@ define(['UILayer', getAppUITemplatePath('ui.bubble.layer'), 'UIScroll'], functio
         this.$el.css({ position: 'absolute' });
       });
       this.on('onShow', function () {
-
-        //检查可视区域是否超出;
-        this.checkSizeOverflow();
         this.setzIndexTop(this.el);
-      });
-      this.on('onHide', function () {
-        if (this.scroll) this.scroll.destroy();
+
       });
     }
 

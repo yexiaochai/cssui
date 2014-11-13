@@ -1,61 +1,62 @@
 ﻿
 <header class="cm-header">
 <%
-var i = 0, len = 0;
+
+var i = 0, len = 0, j = 0, keyagain = 0;
 var left = left;
 var center = center;
-var right = right;
+var right =  right.reverse();
 var item = null;
+var outhtml = ''
+var dir;
+var btnObj = null;
+
 %>
 
-<% for(i = 0, len = left.length; i < len; i++) { %>
-  <% item = left[i]; %>
-  <%if(typeof item.itemFn == 'function') { %>
-    <%=item.itemFn() %>
-  <%} else if(item.type=='btn') { %>
-    <span class="cm-header-btn fl js_<%=item.tagname %>" ><%=item.title %></span>
-  <%} else { %>
-    <span class="cm-header-icon fl  js_<%=item.tagname %>" >
-      <i class="<%=item.type %>-<%=item.tagname %>"></i>
-    </span>
+<%for(keyagain=0; keyagain < 2; keyagain++) { %>
+  <% 
+    if(keyagain == 0) { dir = 'fl'; btnObj = left; } else { dir = 'fr'; btnObj = right; }
+  %>
+  <% for(i = 0, len = btnObj.length; i < len; i++) { %>
+    <% item = btnObj[i]; %>
+    <%if(typeof item.itemFn == 'function') { %>
+      <%=item.itemFn() %>
+    <%} else { %>
+      <span class="cm-header-icon <%=dir %>  js_<%=item.tagname %>" >
+        <% if(item.value) { %>
+          <%=item.value %>
+        <% } else { %>
+          <i class="icon-<%=item.tagname %>"></i>
+        <% } %>
+      </span>
+    <%} %>
   <%} %>
 <%} %>
 
-<% for(i = right.length - 1; i > -1; i--) { %>
-  <% item = right[i]; %>
-   <%if(typeof item.itemFn == 'function') { %>
-    <%=item.itemFn() %>
-  <%} else if(item.type=='btn' ) { %>
-    <span class="cm-header-btn fr js_<%=item.tagname %>" ><%=item.title %></span>
-  <%} else { %>
-     <span class="cm-header-icon fr js_<%=item.tagname %>" >
-      <i class="<%=item.type %>-<%=item.tagname %>"></i>
-    </span>
-  <%} %>
-<%} %>
+<% item = center; %>
+<%if(typeof item.itemFn == 'function') { %>
+  <%=item.itemFn() %>
+<%} else if(item.tagname=='title' ||  item.tagname=='subtitle') { %>
+  <h1 class="cm-page-title js_<%=item.tagname %>" >
+    <%if(typeof(item.value) == 'object' && item.value.length == 2) { %>
+      <span class="cm-title-l"><%=item.value[0]%></span>
+      <span class="cm-title-s"><%=item.value[1]%></span>
+    <%} else { %>
+      <%=item.value %>
+    <%} %>
+  </h1>
+<%} else if(item.tagname=='select'){ %>
+  <h1 class="cm-page-select-title js_<%=item.tagname %>" >
+    <%=item.value %>
+  </h1>
+<%} else if(item.tagname=='tabs') { %>
+  <h1 class="cm-page-tabs-title js_<%=item.tagname %>" >
+    <%for(j = 0; j < item.data.items.length; j ++) { %>
+      <span data-key="<%=item.data.items[j].id %>" class="<%if(item.data.index===j){ %>active<%} %>" ><%=item.data.items[j].name %></span>
+    <% } %>
+  </h1>
+<% } else{ %>
 
-<% for(i = 0, len = center.length; i < len; i++) { %>
-<% item = center[i]; %>
-  <%if(item.type=='title') { %>
-    <h1 class="cm-page-title js_<%=item.tagname %>" >
-      <%if(typeof(item.title) == 'object' && item.title.length == 2) { %>
-        <span class="cm-title-l"><%=item.title[0]%></span>
-        <span class="cm-title-s"><%=item.title[1]%></span>
-      <%} else { %>
-        <%=item.title %>
-      <%} %>
-    </h1>
-  <%} else if(item.type=='select'){ %>
-    <h1 class="cm-page-select-title js_<%=item.tagname %>" >
-      <%=item.title %>
-    </h1>
-  <%} else if(item.type=='tabs') { %>
-    <h1 class="cm-page-tabs-title js_<%=item.tagname %>" >
-      <%for(var j = 0; j < item.data.length; j ++) { %>
-        <span data-key="<%=item.data[j].id %>" class="<%if(item.index===j){ %>active<%} %>" ><%=item.data[j].name %></span>
-      <% } %>
-    </h1>
-  <% } %>
 <%} %>
 
 </header>
