@@ -2,9 +2,15 @@
 
   var app = './blade/';
 
-  window.getAppUITemplatePath = function (path) {
-    return 'text!' + app + 'ui/' + path + '.html'; 
-  }
+//在此设置版本号，或者由url取出或者由服务器取出...
+var ver = 'v1';
+window.getAppUITemplatePath = function (path) {
+  return 'text!' + app + 'ui/' + path + (ver ? '_' + ver : '') + '.html';
+}
+window.getAppUICssPath = function (path) {
+  return 'text!' + app + 'ui/' + path + (ver ? '_' + ver : '') + '.css';
+}
+
 
   require.config({
     shim: {
@@ -37,7 +43,7 @@
 
       'T_UIToast': app + 'ui/ui.toast.html',
 
-//      'T_UIToast': 'http://localhost:5389/blade/demo/templates/toast.html',
+      //      'T_UIToast': 'http://localhost:5389/blade/demo/templates/toast.html',
 
 
       'UIInlineView': app + 'ui/ui.inline.view',

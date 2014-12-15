@@ -1,0 +1,78 @@
+﻿.cui-number-ma {
+    min-width: 100px;
+    height: 29px;
+    line-height: 29px;
+    text-align: center;
+    position: relative;
+    border: silver 1px solid;
+    background: #fff;
+    display: inline-block
+}
+
+.cui-number-ma i {
+    width: 50px;
+    height: 44px;
+    position: absolute;
+    top: -7px
+}
+
+.cui-number-ma i:after {
+    color: #fff;
+    text-align: center;
+    width: 32px;
+    height: 29px;
+    position: absolute;
+    background: #099fde
+}
+
+.cui-number-ma i.num-minus {
+    left: -10px;
+    font: 400 2.8em/25px Arial
+}
+
+.cui-number-ma i.num-add {
+    right: -10px;
+    font: 400 2.2em/29px Arial
+}
+
+.cui-number-ma i.num-minus:after {
+    content: "-";
+    left: 10px;
+    top: 7px
+}
+
+.cui-number-ma i.num-add:after {
+    content: "+";
+    right: 10px;
+    top: 7px
+}
+
+.cui-number-ma i.num-invalid:after {
+    color: #d9d9d9;
+    background: #f4f4f4
+}
+
+.cui-number-ma .num-value-txt {
+    width: 33px;
+    height: 100%;
+    padding: 0;
+    color: #000;
+    margin: 0 33px;
+    text-align: center
+}
+
+.cui-number-ma .num-value-txt:disable {
+    color: #000
+}
+
+input {
+    width: 100%;
+    height: 42px;
+    border: 0;
+    padding: 0 5px;
+    background: transparent;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    outline: 0
+}

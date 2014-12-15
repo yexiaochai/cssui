@@ -28,27 +28,6 @@ define([], function () {
     };
   })();
 
-  var UIContainerUtil = (function () {
-    //一个闭包对象存放所有实例化的ui实例
-    var UIContainer = {};
-
-    return {
-      addItem: function (id, ui) {
-        UIContainer[id] = ui;
-      },
-
-      removeItem: function (id) {
-        if (UIContainer[id]) delete UIContainer[id];
-      },
-
-      getItem: function (id) {
-        if (id) return UIContainer[id];
-        return UIContainer;
-      }
-    };
-  })();
-
-
   return _.inherit({
 
     /**
@@ -61,6 +40,12 @@ define([], function () {
       this.id = _.uniqueId('ui-view-');
 
       this.template = '';
+
+      //与模板对应的css文件，默认不存在，需要各个组件复写
+      this.uiStyle = null;
+      //保存样式格式化结束的字符串
+      this.formateStyle = null;
+
       this.datamodel = {};
       this.events = {};
 
@@ -138,10 +123,32 @@ define([], function () {
     * @method createRoot
     * @param {String} html
     */
-    createRoot: function (html) {
-      this.$el = $('<div class="view" style="display: none; " id="' + this.id + '"></div>');
-      this.$el.html(html);
-    },
+createRoot: function (html) {
+
+  var style = this.createInlineStyle();
+  if (style) {
+    this.formateStyle = '<style id="' + this.id + '_style">' + style + '</style>';
+    html = this.formateStyle + html;
+  }
+
+  this.$el = $('<div class="view" style="display: none; " id="' + this.id + '"></div>');
+  this.$el.html(html);
+},
+
+//创建内嵌style相关
+createInlineStyle: function () {
+  //如果不存在便不予理睬
+  if (!_.isString(this.uiStyle)) return null;
+  var style = '', uid = this.id;
+
+  //创建定制化的style字符串，会模拟一个沙箱，该组件样式不会对外影响，实现原理便是加上#id 前缀
+  style = this.uiStyle.replace(/(\s*)([^\{\}]+)\{/g, function (a, b, c) {
+    return b + c.replace(/([^,]+)/g, '#' + uid + ' $1') + '{';
+  });
+
+  return style;
+
+},
 
     _isAddEvent: function (key) {
       if (key == 'onCreate' || key == 'onPreShow' || key == 'onShow' || key == 'onRefresh' || key == 'onHide')
@@ -187,14 +194,6 @@ define([], function () {
 
       this.initElement();
 
-      //将当前的ui实例装入容器
-      UIContainerUtil.addItem(this.id, this);
-
-    },
-
-    //返回所有实例化的UI组件集合
-    getUIContainer: function () {
-      return UIContainerUtil.getItem();
     },
 
     //内部重置event，加入全局控制类事件
@@ -249,17 +248,19 @@ define([], function () {
 
     //刷新根据传入参数判断是否走onCreate事件
     //这里原来的dom会被移除，事件会全部丢失 需要修复*****************************
-    refresh: function (needEvent) {
-      this.resetPropery();
-      if (needEvent) {
-        this.create();
-      } else {
-        this.$el.html(this.render());
-      }
-      this.initElement();
-      if (this.status == 'show') this.show();
-      this.trigger('onRefresh');
-    },
+refresh: function (needEvent) {
+  var html = '';
+  this.resetPropery();
+  if (needEvent) {
+    this.create();
+  } else {
+    html = this.render();
+    this.$el.html(this.formateStyle ? this.formateStyle + html : html);
+  }
+  this.initElement();
+  if (this.status == 'show') this.show();
+  this.trigger('onRefresh');
+},
 
     show: function () {
       if (!this.wrapper[0] || !this.$el[0]) return;
@@ -300,7 +301,6 @@ define([], function () {
       this.status = 'destroy';
       this.unBindEvents();
       this.removeSysEvents();
-      UIContainerUtil.removeItem(this.id);
       this.$el.remove();
       this.trigger('onDestroy');
       delete this;
