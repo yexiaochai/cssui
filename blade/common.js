@@ -2,14 +2,17 @@
 
   var app = './blade/';
 
-//在此设置版本号，或者由url取出或者由服务器取出...
-var ver = 'v1';
-window.getAppUITemplatePath = function (path) {
-  return 'text!' + app + 'ui/' + path + (ver ? '_' + ver : '') + '.html';
-}
-window.getAppUICssPath = function (path) {
-  return 'text!' + app + 'ui/' + path + (ver ? '_' + ver : '') + '.css';
-}
+  //在此设置版本号，或者由url取出或者由服务器取出...
+  var ver = 'v1';
+
+//  ver = '';
+
+  window.getAppUITemplatePath = function (path) {
+    return 'text!' + app + 'ui/' + path + (ver ? '_' + ver : '') + '.html';
+  }
+  window.getAppUICssPath = function (path) {
+    return 'text!' + app + 'ui/' + path + (ver ? '_' + ver : '') + '.css';
+  }
 
 
   require.config({

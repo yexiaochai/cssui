@@ -1,26 +1,5 @@
-﻿/**
-* @File ui.abstract.view.js
-* @Description: UI组件基类
-* @author l_wang@ctrip.com
-* @date 2014-10-09
-* @version V1.0
-*/
+﻿define([], function () {
 
-/**
-* UI组件基类，提供一个UI类基本功能，并可注册各个事件点：
-① onPreCreate 在dom创建时触发，只触发一次
-② onCreate 在dom创建后触发，只触发一次
-
-* @namespace UIView
-*/
-define([], function () {
-
-  /**
-  * @description 闭包保存所有UI共用的信息，这里是z-index
-  * @method getBiggerzIndex
-  * @param {Number} level
-  * @returns {Number}
-  */
   var getBiggerzIndex = (function () {
     var index = 3000;
     return function (level) {
@@ -29,11 +8,6 @@ define([], function () {
   })();
 
   return _.inherit({
-
-    /**
-    * @description 设置实例默认属性
-    * @method propertys
-    */
     propertys: function () {
       //模板状态
       this.wrapper = $('body');
@@ -43,8 +17,24 @@ define([], function () {
 
       //与模板对应的css文件，默认不存在，需要各个组件复写
       this.uiStyle = null;
+
       //保存样式格式化结束的字符串
-      this.formateStyle = null;
+      //      this.formateStyle = null;
+
+      //保存shadow dom的引用，用于事件代理
+      this.shadowDom = null;
+      this.shadowStyle = null;
+      this.shadowRoot = null;
+
+      //框架统一开关，是否开启shadow dom
+      this.openShadowDom = true;
+
+//      this.openShadowDom = false;
+
+      //不支持创建接口便关闭，也许有其它因素导致，这个后期已接口放出
+      if (!this.wrapper[0].createShadowRoot) {
+        this.openShadowDom = false;
+      }
 
       this.datamodel = {};
       this.events = {};
@@ -63,13 +53,6 @@ define([], function () {
 
     },
 
-    /**
-    * @description 绑定事件点回调，这里应该提供一个方法，表明是insert 或者 push，这样有一定手段可以控制各个同一事件集合的执行顺序
-    * @param {String} type
-    * @param {Function} fn
-    * @param {Boolean} insert
-    * @method on
-    */
     on: function (type, fn, insert) {
       if (!this.eventArr[type]) this.eventArr[type] = [];
 
@@ -81,12 +64,6 @@ define([], function () {
       }
     },
 
-    /**
-    * @description 移除某一事件回调点集合中的一项
-    * @param {String} type
-    * @param {Function} fn
-    * @method off
-    */
     off: function (type, fn) {
       if (!this.eventArr[type]) return;
       if (fn) {
@@ -96,13 +73,6 @@ define([], function () {
       }
     },
 
-    /**
-    * @description 触发某一事件点集合回调，按顺序触发
-    * @method trigger
-    * @param {String} type
-    * @returns {Array}
-    */
-    //PS：这里做的好点还可以参考js事件机制，冒泡捕获处于阶段
     trigger: function (type) {
       var _slice = Array.prototype.slice;
       var args = _slice.call(arguments, 1);
@@ -117,38 +87,123 @@ define([], function () {
       return results;
     },
 
-    /**
-    * @description 创建dom根元素，并组装形成UI Dom树
-    * @override 这里可以重写该接口，比如有些场景不希望自己创建div为包裹层
-    * @method createRoot
-    * @param {String} html
-    */
-createRoot: function (html) {
+    bindEvents: function () {
+      var events = this.events;
+      var el = this.$el;
+      if (this.openShadowDom) el = this.shadowRoot;
 
-  var style = this.createInlineStyle();
-  if (style) {
-    this.formateStyle = '<style id="' + this.id + '_style">' + style + '</style>';
-    html = this.formateStyle + html;
-  }
+      if (!(events || (events = _.result(this, 'events')))) return this;
+      this.unBindEvents();
 
-  this.$el = $('<div class="view" style="display: none; " id="' + this.id + '"></div>');
-  this.$el.html(html);
-},
+      // 解析event参数的正则
+      var delegateEventSplitter = /^(\S+)\s*(.*)$/;
+      var key, method, match, eventName, selector;
 
-//创建内嵌style相关
-createInlineStyle: function () {
-  //如果不存在便不予理睬
-  if (!_.isString(this.uiStyle)) return null;
-  var style = '', uid = this.id;
+      // 做简单的字符串数据解析
+      for (key in events) {
+        method = events[key];
+        if (!_.isFunction(method)) method = this[events[key]];
+        if (!method) continue;
 
-  //创建定制化的style字符串，会模拟一个沙箱，该组件样式不会对外影响，实现原理便是加上#id 前缀
-  style = this.uiStyle.replace(/(\s*)([^\{\}]+)\{/g, function (a, b, c) {
-    return b + c.replace(/([^,]+)/g, '#' + uid + ' $1') + '{';
-  });
+        match = key.match(delegateEventSplitter);
+        eventName = match[1], selector = match[2];
+        method = _.bind(method, this);
+        eventName += '.delegateUIEvents' + this.id;
 
-  return style;
+        if (selector === '') {
+          el.on(eventName, method);
+        } else {
+          el.on(eventName, selector, method);
+        }
+      }
 
-},
+      return this;
+    },
+
+    unBindEvents: function () {
+      var el = this.$el;
+      if (this.openShadowDom) el = this.shadowRoot;
+
+      el.off('.delegateUIEvents' + this.id);
+      return this;
+    },
+
+    createRoot: function (html) {
+
+      this.$el = $('<div class="view" style="display: none; " id="' + this.id + '"></div>');
+      var style = this.getInlineStyle();
+
+      //如果存在shadow dom接口，并且框架开启了shadow dom
+      if (this.openShadowDom) {
+        //在框架创建的子元素层面创建沙箱
+        this.shadowRoot = $(this.$el[0].createShadowRoot());
+
+        this.shadowDom = $('<div class="js_shadow_root">' + html + '</div>');
+        this.shadowStyle = $(style);
+
+        //开启shadow dom情况下，组件需要被包裹起来
+        this.shadowRoot.append(this.shadowStyle);
+        this.shadowRoot.append(this.shadowDom);
+
+      } else {
+
+        this.$el.html(style + html);
+      }
+    },
+
+    getInlineStyle: function () {
+      //如果不存在便不予理睬
+      if (!_.isString(this.uiStyle)) return null;
+      var style = this.uiStyle, uid = this.id;
+
+      //在此处理shadow dom的样式，直接返回处理结束后的html字符串
+      if (!this.openShadowDom) {
+        //创建定制化的style字符串，会模拟一个沙箱，该组件样式不会对外影响，实现原理便是加上#id 前缀
+        style = style.replace(/(\s*)([^\{\}]+)\{/g, function (a, b, c) {
+          return b + c.replace(/([^,]+)/g, '#' + uid + ' $1') + '{';
+        });
+      }
+
+      style = '<style >' + style + '</style>';
+      this.formateStyle = style;
+      return style;
+    },
+
+    render: function (callback) {
+      var data = this.getViewModel() || {};
+
+      var html = this.template;
+      if (!this.template) return '';
+      if (data) {
+        html = _.template(this.template)(data);
+      }
+
+      typeof callback == 'function' && callback.call(this);
+      return html;
+    },
+
+    //刷新根据传入参数判断是否走onCreate事件
+    //这里原来的dom会被移除，事件会全部丢失 需要修复*****************************
+    refresh: function (needEvent) {
+      var html = '';
+      this.resetPropery();
+      //如果开启了沙箱便只能重新渲染了
+      if (needEvent) {
+        this.create();
+      } else {
+        html = this.render();
+        if (this.openShadowDom) {
+          //将解析后的style与html字符串装载进沙箱
+          //*************
+          this.shadowDom.html(html);
+        } else {
+          this.$el.html(this.formateStyle + html);
+        }
+      }
+      this.initElement();
+      if (this.status != 'hide') this.show();
+      this.trigger('onRefresh');
+    },
 
     _isAddEvent: function (key) {
       if (key == 'onCreate' || key == 'onPreShow' || key == 'onShow' || key == 'onRefresh' || key == 'onHide')
@@ -156,12 +211,6 @@ createInlineStyle: function () {
       return false;
     },
 
-    /**
-    * @description 设置参数，重写默认属性
-    * @override 
-    * @method setOption
-    * @param {Object} options
-    */
     setOption: function (options) {
       //这里可以写成switch，开始没有想到有这么多分支
       for (var k in options) {
@@ -177,11 +226,6 @@ createInlineStyle: function () {
       //      _.extend(this, options);
     },
 
-    /**
-    * @description 构造函数
-    * @method initialize
-    * @param {Object} opts
-    */
     initialize: function (opts) {
       this.propertys();
       this.setOption(opts);
@@ -213,7 +257,7 @@ createInlineStyle: function () {
     },
 
     $: function (selector) {
-      return this.$el.find(selector);
+      return this.openShadowDom ? this.shadowDom.find(selector) : this.$el.find(selector);
     },
 
     //提供属性重置功能，对属性做检查
@@ -234,33 +278,6 @@ createInlineStyle: function () {
 
     //实例化需要用到到dom元素
     initElement: function () { },
-
-    render: function (callback) {
-      data = this.getViewModel() || {};
-      var html = this.template;
-      if (!this.template) return '';
-      if (data) {
-        html = _.template(this.template)(data);
-      }
-      typeof callback == 'function' && callback.call(this);
-      return html;
-    },
-
-    //刷新根据传入参数判断是否走onCreate事件
-    //这里原来的dom会被移除，事件会全部丢失 需要修复*****************************
-refresh: function (needEvent) {
-  var html = '';
-  this.resetPropery();
-  if (needEvent) {
-    this.create();
-  } else {
-    html = this.render();
-    this.$el.html(this.formateStyle ? this.formateStyle + html : html);
-  }
-  this.initElement();
-  if (this.status == 'show') this.show();
-  this.trigger('onRefresh');
-},
 
     show: function () {
       if (!this.wrapper[0] || !this.$el[0]) return;
@@ -315,51 +332,6 @@ refresh: function (needEvent) {
       if (!level || level > 10) level = 0;
       level = level * 1000;
       el.css('z-index', getBiggerzIndex(level));
-
-    },
-
-    /**
-    * 解析events，根据events的设置在dom上设置事件
-    */
-    bindEvents: function () {
-      var events = this.events;
-
-      if (!(events || (events = _.result(this, 'events')))) return this;
-      this.unBindEvents();
-
-      // 解析event参数的正则
-      var delegateEventSplitter = /^(\S+)\s*(.*)$/;
-      var key, method, match, eventName, selector;
-
-      // 做简单的字符串数据解析
-      for (key in events) {
-        method = events[key];
-        if (!_.isFunction(method)) method = this[events[key]];
-        if (!method) continue;
-
-        match = key.match(delegateEventSplitter);
-        eventName = match[1], selector = match[2];
-        method = _.bind(method, this);
-        eventName += '.delegateUIEvents' + this.id;
-
-        if (selector === '') {
-          this.$el.on(eventName, method);
-        } else {
-          this.$el.on(eventName, selector, method);
-        }
-      }
-
-      return this;
-    },
-
-    /**
-    * 冻结dom上所有元素的所有事件
-    *
-    * @return {object} 执行作用域
-    */
-    unBindEvents: function () {
-      this.$el.off('.delegateUIEvents' + this.id);
-      return this;
     }
 
   });
